@@ -19,13 +19,17 @@ def match_jobs(req: MatchRequest):
         job_skills = job.get("skills", [])
 
         score, matched = calculate_match(cv_skills, job_skills)
+        missing_skills = list(set(job_skills) - set(cv_skills))
 
         results.append({
             "title": job["title"],
             "company": job["company"],
             "score": score,
             "matched_skills": matched,
-            "missing_skills": list(set(job_skills) - set(cv_skills))
+            "missing_skills": list(set(job_skills) - set(cv_skills)),
+            "improvement_tips": [
+                f"Consider learning {skill}" for skill in missing_skills
+            ]
         })
 
     results = sorted(results, key=lambda x: x["score"], reverse=True)
