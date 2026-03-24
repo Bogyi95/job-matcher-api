@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from app.services.matcher import calculate_match
-from app.scraper.jobs_scraper import fetch_jobs
 from app.services.skill_extractor import extract_skills
+from app.scraper.playwright_scraper import get_jobs_cached
 
 router = APIRouter()
 
@@ -12,7 +12,7 @@ class MatchRequest(BaseModel):
 @router.post("/match")
 def match_jobs(req: MatchRequest):
     cv_skills = extract_skills(req.cv_text)
-    jobs = fetch_jobs()
+    jobs = get_jobs_cached()
     results = []
 
     for job in jobs:

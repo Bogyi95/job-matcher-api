@@ -1,5 +1,9 @@
 from playwright.sync_api import sync_playwright
 from app.services.skill_extractor import extract_skills
+import time
+
+_cached_jobs = []
+_last_fetch = 0
 
 def fetch_jobs_playwright():
     with sync_playwright() as p:
@@ -101,3 +105,11 @@ def fetch_jobs_playwright():
             jobs.append(job)
 
         return jobs[:20]
+def get_jobs_cached():
+    global _cached_jobs, _last_fetch
+
+    if time.time() - _last_fetch > 300:
+        _cached_jobs = fetch_jobs_playwright()
+        _last_fetch = time.time()
+
+    return _cached_jobs
