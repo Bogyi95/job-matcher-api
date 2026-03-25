@@ -5,6 +5,7 @@ __pycache__/
 venv/
 .env/
 .env
+.env.local
 .vscode/
 .idea/
 .DS_Store
@@ -16,3 +17,6 @@ htmlcov/
 *.egg-info/
 dist/
 build/
+node_modules/
+build/
+dist/
