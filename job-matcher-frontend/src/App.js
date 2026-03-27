@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import "./App.css";
 
 function App() {
   const [cvText, setCvText] = useState("");
@@ -60,7 +61,7 @@ function App() {
         Analyze Jobs
       </button>
 
-      {loading && <p>Loading...</p>}
+      {loading && <div className="spinner"></div>}
 
       {/* JOB LIST */}
       <div style={{ marginTop: "30px" }}>
