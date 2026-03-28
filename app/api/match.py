@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from app.services.matcher import calculate_match
+from app.services.matcher import calculate_match, calculate_ai_match
 from app.services.skill_extractor import extract_skills
 from app.scraper.playwright_scraper import get_jobs_cached
 
@@ -18,7 +18,10 @@ def match_jobs(req: MatchRequest):
     for job in jobs:
         job_skills = job.get("skills", [])
 
-        score, matched = calculate_match(cv_skills, job_skills)
+        skill_score, matched = calculate_match(cv_skills, job_skills)
+        #add option to upload cv so ai calculator can better estimate match!
+        ai_score = calculate_ai_match(req.cv_text, job["description"])
+        score = round(0.5 * ai_score + 0.5 * skill_score, 2)
         missing_skills = list(set(job_skills) - set(cv_skills))
 
         results.append({
@@ -33,4 +36,4 @@ def match_jobs(req: MatchRequest):
         })
 
     results = sorted(results, key=lambda x: x["score"], reverse=True)
-    return results[:5]
+    return results[:20]
