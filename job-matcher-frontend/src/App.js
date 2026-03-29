@@ -76,7 +76,16 @@ function App() {
               boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
             }}
           >
-            <h3>{job.title}</h3>
+            {job.url ? (
+              <a href={job.url} target="_blank" rel="noreferrer">
+                <h3 style={{ color: "#2563eb", cursor: "pointer" }}>
+                  {job.title}
+                </h3>
+              </a>
+            ) : (
+              <h3>{job.title}</h3>
+            )}
+
             <p style={{ color: "#555" }}>{job.company}</p>
 
             {/* SCORE */}

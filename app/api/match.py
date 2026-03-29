@@ -29,8 +29,9 @@ def match_jobs(req: MatchRequest):
             "missing_skills": list(set(job_skills) - set(cv_skills)),
             "improvement_tips": [
                 f"Consider learning {skill}" for skill in missing_skills
-            ]
+            ],
+            "url": job.get("url")
         })
 
     results = sorted(results, key=lambda x: x["score"], reverse=True)
-    return results[:5]
+    return results

@@ -1,5 +1,5 @@
 from playwright.sync_api import sync_playwright
-from app.services.skill_extractor import extract_skills
+from app.services.skill_extractor import SKILLS, extract_skills
 import time
 
 _cached_jobs = []
@@ -12,6 +12,14 @@ def fetch_jobs_playwright():
 
         page.goto("https://justjoin.it/all-locations/python")
         page.wait_for_timeout(5000)
+
+        links = page.locator("a").all()
+        job_links = []
+        for el in links:
+            href = el.get_attribute("href")
+            if href and "/job-offer" in href:
+                full_url = f"https://justjoin.it{href}"
+                job_links.append(full_url)
 
         texts = page.locator("div").all_inner_texts()
 
@@ -65,9 +73,8 @@ def fetch_jobs_playwright():
 
             return True
 
-        def parse_job(text):
+        def parse_job(text, job_links):
             lines = []
-
             for l in text.split("\n"):
                 if l.strip():
                     lines.append(l.strip())
@@ -86,7 +93,8 @@ def fetch_jobs_playwright():
                 "title": title,
                 "company": company,
                 "description": text,
-                "skills": extract_skills(text)
+                "skills": extract_skills(text),
+                "url": next((l for l in job_links if title.lower().replace(" ", "-")[:10] in l), None)
             }
 
         seen = set()
@@ -96,19 +104,23 @@ def fetch_jobs_playwright():
             if not is_valid_job(text):
                 continue
 
-            job = parse_job(text)
+            job = parse_job(text, job_links)
+
+            if not job:
+                continue
 
             if job["title"] in seen:
                 continue
 
             seen.add(job["title"])
             jobs.append(job)
-
-        return jobs[:20]
+        print("JOBS FOUND:", len(jobs))
+        return jobs
+    
 def get_jobs_cached():
     global _cached_jobs, _last_fetch
 
-    if time.time() - _last_fetch > 300:
+    if True:
         _cached_jobs = fetch_jobs_playwright()
         _last_fetch = time.time()
 
