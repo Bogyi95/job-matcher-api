@@ -27,5 +27,5 @@ How it works:
 
 Next Steps:
 -add uploading CV file
--extract skills from CV file(not statickly) by using OpenAI api
+-extract skills from a CV file dynamically using the OpenAI API instead of hardcoding them
 <img width="1900" height="951" alt="job-matcher-api" src="https://github.com/user-attachments/assets/3f192e11-b9a6-410a-9f14-582cdaccd075" />
